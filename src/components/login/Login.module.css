@@ -14,7 +14,7 @@
     background-color: white;
     border-radius: 10px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 300px; /* Ensures consistent width */
+    width: 350px; /* Ensures consistent width */
     box-sizing: border-box; /* Include padding and border in element's total width and height */
 }
 
@@ -41,7 +41,7 @@
 }
 
 .loginButton {
-    width: 100%;
+    width: 300px;
     padding: 10px;
     background-color: #3897f0; /* Blue button */
     color: white;

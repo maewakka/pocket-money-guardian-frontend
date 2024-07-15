@@ -3,10 +3,12 @@ import axios from 'axios';
 import styles from './Login.module.css';
 import logo from '../../assets/logo.png'; // Placeholder for your logo image
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 const Login = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [cookies, setCookie] = useCookies(['jwt']);
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
@@ -16,10 +18,9 @@ const Login = () => {
                 email,
                 password,
             });
-            console.log(response.data);
-            // console.log('Login successful:', response.data);
-            // Handle successful login, e.g., store token, redirect to another page
-            // navigate('/dashboard'); // Example: redirect to dashboard after login
+            const { accessToken } = response.data;
+            setCookie('jwt', accessToken, { path: '/' });
+            navigate('/dashboard');
         } catch (error) {
             console.error('Login error:', error);
             // Handle login error, e.g., show error message
