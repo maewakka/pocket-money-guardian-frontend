@@ -8,7 +8,7 @@ const useAxiosInstance = () => {
     const [cookies] = useCookies(['jwt']);
 
     const instance = axios.create({
-        baseURL: '/api', // API 기본 URL 설정
+        baseURL: '/', // API 기본 URL 설정
         headers: {
             Authorization: `Bearer ${cookies.jwt}`,
         },
