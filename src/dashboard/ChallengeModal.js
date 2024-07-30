@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import styles from './ChallengeModal.module.css';
+import useAxiosInstance from '../api/axiosInstance';
 
 const ChallengeModal = ({ setShowModal, onChallengeCreated }) => {
     const [cookies] = useCookies(['jwt']);
     const [name, setName] = useState('');
     const [limit, setLimit] = useState('');
     const [initialDay, setInitialDay] = useState('');
+    const axiosInstance = useAxiosInstance();
 
     const handleSubmit = async () => {
         try {
             const token = cookies.jwt;
-            await axios.post('/api/challenge/create', {
+            await axiosInstance.post('/api/challenge/create', {
                 name,
                 limit: parseInt(limit, 10),
                 initialDay: parseInt(initialDay, 10)

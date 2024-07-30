@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import styles from './Login.module.css';
 import logo from '../../assets/logo.png'; // Placeholder for your logo image
@@ -10,6 +10,12 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [cookies, setCookie] = useCookies(['jwt']);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (cookies.jwt) {
+            navigate('/dashboard');
+        }
+    }, [cookies, navigate]);
 
     const handleLogin = async (e) => {
         e.preventDefault();

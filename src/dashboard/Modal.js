@@ -2,17 +2,19 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import styles from './Modal.module.css';
+import useAxiosInstance from '../api/axiosInstance';
 
 const Modal = ({ handleUserJoin, setShowModal }) => {
     const [cookies] = useCookies(['jwt']);
     const [searchQuery, setSearchQuery] = useState('');
     const [users, setUsers] = useState([]);
     const [selectedUserIds, setSelectedUserIds] = useState([]);
+    const axiosInstance = useAxiosInstance();
 
     const handleSearch = async () => {
         try {
             const token = cookies.jwt;
-            const response = await axios.get(`/api/users?nickName=${searchQuery}`, {
+            const response = await axiosInstance.get(`/api/users?nickName=${searchQuery}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

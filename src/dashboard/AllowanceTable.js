@@ -4,6 +4,7 @@ import styles from './AllowanceTable.module.css';
 import { useCookies } from 'react-cookie';
 import Modal from './Modal';
 import ExpenseModal from './ExpenseModal';
+import useAxiosInstance from '../api/axiosInstance';
 
 const AllowanceTable = ({ selectedChallengeId }) => {
     const [cookies] = useCookies(['jwt']);
@@ -14,12 +15,13 @@ const AllowanceTable = ({ selectedChallengeId }) => {
     const [month, setMonth] = useState(new Date().getMonth() + 1);
     const [showUserModal, setShowUserModal] = useState(false);
     const [showExpenseModal, setShowExpenseModal] = useState(false);
+    const axiosInstance = useAxiosInstance();
 
     useEffect(() => {
         const fetchChallengeDetails = async () => {
             try {
                 const token = cookies.jwt;
-                const response = await axios.get(`/api/challenge/${selectedChallengeId}`, {
+                const response = await axiosInstance.get(`/api/challenge/${selectedChallengeId}`, {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
@@ -43,7 +45,7 @@ const AllowanceTable = ({ selectedChallengeId }) => {
             if (selectedParticipant && selectedChallengeId) {
                 try {
                     const token = cookies.jwt;
-                    const response = await axios.post('/api/history/list', {
+                    const response = await axiosInstance.post('/api/history/list', {
                         userId: selectedParticipant,
                         challengeId: selectedChallengeId,
                         year,
@@ -66,7 +68,7 @@ const AllowanceTable = ({ selectedChallengeId }) => {
     const handleUserJoin = async (selectedUserIds) => {
         try {
             const token = cookies.jwt;
-            await axios.post('/api/challenge/join', {
+            await axiosInstance.post('/api/challenge/join', {
                 userIds: selectedUserIds,
                 challengeId: selectedChallengeId
             }, {
@@ -75,7 +77,7 @@ const AllowanceTable = ({ selectedChallengeId }) => {
                 }
             });
             setShowUserModal(false);
-            const response = await axios.get(`/api/challenge/${selectedChallengeId}`, {
+            const response = await axiosInstance.get(`/api/challenge/${selectedChallengeId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -89,7 +91,7 @@ const AllowanceTable = ({ selectedChallengeId }) => {
     const handleExpenseAdd = async (expenseData) => {
         try {
             const token = cookies.jwt;
-            await axios.post('/api/history/register', {
+            await axiosInstance.post('/api/history/register', {
                 ...expenseData,
                 challengeId: selectedChallengeId
             }, {
@@ -98,7 +100,7 @@ const AllowanceTable = ({ selectedChallengeId }) => {
                 }
             });
             setShowExpenseModal(false);
-            const response = await axios.post('/api/history/list', {
+            const response = await axiosInstance.post('/api/history/list', {
                 userId: selectedParticipant,
                 challengeId: selectedChallengeId,
                 year,

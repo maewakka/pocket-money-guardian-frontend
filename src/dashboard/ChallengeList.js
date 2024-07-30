@@ -3,17 +3,19 @@ import axios from 'axios';
 import styles from './ChallengeList.module.css';
 import { useCookies } from 'react-cookie';
 import ChallengeModal from './ChallengeModal';
+import useAxiosInstance from '../api/axiosInstance';
 
 const ChallengeList = ({ setSelectedChallengeId }) => {
     const [cookies] = useCookies(['jwt']);
     const [challenges, setChallenges] = useState([]);
     const [showChallengeModal, setShowChallengeModal] = useState(false);
+    const axiosInstance = useAxiosInstance();
 
     useEffect(() => {
         const fetchChallenges = async () => {
             try {
                 const token = cookies.jwt;
-                const response = await axios.get('/api/challenge/own', {
+                const response = await axiosInstance.get('/api/challenge/own', {
                     headers: {
                         'Authorization': `Bearer ${token}`
                     }
