@@ -3,7 +3,7 @@ import axios from 'axios';
 import styles from './ChallengeList.module.css';
 import { useCookies } from 'react-cookie';
 import ChallengeModal from './ChallengeModal';
-import useAxiosInstance from '../api/axiosInstance';
+import useAxiosInstance from '../../api/axiosInstance';
 
 const ChallengeList = ({ setSelectedChallengeId }) => {
     const [cookies] = useCookies(['jwt']);
@@ -55,8 +55,8 @@ const ChallengeList = ({ setSelectedChallengeId }) => {
     };
 
     return (
-        <div className={styles.sidebar}>
-            <h2>챌린지 리스트</h2>
+        <>
+            <h2 className={styles.listLogo}>챌린지 리스트</h2>
             <ul className={styles.challengeList}>
                 {challenges.map((challenge) => (
                     <li
@@ -75,7 +75,7 @@ const ChallengeList = ({ setSelectedChallengeId }) => {
                     onChallengeCreated={handleChallengeCreated}
                 />
             )}
-        </div>
+        </>
     );
 };
 

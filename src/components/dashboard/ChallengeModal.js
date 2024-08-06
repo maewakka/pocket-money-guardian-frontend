@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useCookies } from 'react-cookie';
 import styles from './ChallengeModal.module.css';
-import useAxiosInstance from '../api/axiosInstance';
+import useAxiosInstance from '../../api/axiosInstance';
 
 const ChallengeModal = ({ setShowModal, onChallengeCreated }) => {
     const [cookies] = useCookies(['jwt']);

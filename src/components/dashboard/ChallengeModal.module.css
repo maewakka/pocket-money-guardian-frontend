@@ -8,6 +8,11 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
+}
+
+.modalContent h2, .modalContent label {
+    color: black;
 }
 
 .modalContent {
@@ -18,6 +23,7 @@
     width: 300px;
     max-height: 80%;
     overflow-y: auto;
+    z-index: 1001;
 }
 
 .input {

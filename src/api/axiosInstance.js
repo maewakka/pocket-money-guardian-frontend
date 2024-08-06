@@ -33,6 +33,9 @@ const useAxiosInstance = () => {
             if (error.response && error.response.status === 403) {
                 navigate('/login');
             }
+            else {
+                alert(error.response.data.message);
+            }
             return Promise.reject(error);
         }
     );
