@@ -45,27 +45,37 @@
 }
 
 /* 모바일 반응형 스타일 */
-@media (max-width: 768px) {
+@media (max-width: 769px) {
     .listLogo {
         display: none;
     }
 
     .challengeList {
+        width: 100%;
+        height: 50px;
         display: flex;
-        flex-direction: row;
-        overflow-x: auto;
-        padding: 0;
-        margin: 0;
+        align-items: center;
+        justify-content: center;
     }
 
     .challengeItem {
-        padding: 10px 15px;
-        margin: 5px;
-        white-space: nowrap;
+        margin-left: 30px;
+        white-space: nowrap; 
     }
 
     .addButton {
-        margin-left: auto;
-        margin-top: 0;
+        display: inherit;
+        width: 100px;
+        padding: 10px;
+        white-space: nowrap; 
+        background-color: var(--accent-color); /* 부드러운 녹색 */
+        color: white;
+        border: none;
+        border-radius: var(--border-radius);
+        cursor: pointer;
+        transition: background-color 0.3s;
+        margin: 0;
+        margin-left: 10px
     }
+
 }

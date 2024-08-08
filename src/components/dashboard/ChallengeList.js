@@ -57,17 +57,17 @@ const ChallengeList = ({ setSelectedChallengeId }) => {
     return (
         <>
             <h2 className={styles.listLogo}>챌린지 리스트</h2>
-            <ul className={styles.challengeList}>
+            <div className={styles.challengeList}>
                 {challenges.map((challenge) => (
-                    <li
+                    <div
                         key={challenge.id}
                         className={styles.challengeItem}
                         onClick={() => setSelectedChallengeId(challenge.id)}
                     >
                         {challenge.name}
-                    </li>
+                    </div>
                 ))}
-            </ul>
+            </div>
             <button onClick={handleAddChallenge} className={styles.addButton}>챌린지 추가</button>
             {showChallengeModal && (
                 <ChallengeModal

@@ -1,17 +1,15 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import styles from './AllowanceTable.module.css';
 import { useCookies } from 'react-cookie';
 import Modal from './Modal';
 import ExpenseModal from './ExpenseModal';
 import EditModal from './EditModal';
-import { Menu, Item, useContextMenu } from 'react-contexify';
-import 'react-contexify/dist/ReactContexify.css';
+import CustomContextMenu from './CustomContextMenu';
 import useAxiosInstance from '../../api/axiosInstance';
 
 const MENU_ID = "contextmenu";
 
 const AllowanceTable = ({ selectedChallengeId }) => {
-    const { show } = useContextMenu({ id: MENU_ID });
     const [cookies] = useCookies(['jwt']);
     const [challengeDetails, setChallengeDetails] = useState(null);
     const [historyData, setHistoryData] = useState([]);
@@ -21,9 +19,10 @@ const AllowanceTable = ({ selectedChallengeId }) => {
     const [showUserModal, setShowUserModal] = useState(false);
     const [showExpenseModal, setShowExpenseModal] = useState(false);
     const [showEditModal, setShowEditModal] = useState(false);
-    const [contextMenuHistoryId, setContextMenuHistoryId] = useState(null);
+    const [contextMenu, setContextMenu] = useState({ visible: false, x: 0, y: 0, historyId: null });
     const [selectedHistoryItem, setSelectedHistoryItem] = useState(null);
     const axiosInstance = useAxiosInstance();
+    const contextMenuRef = useRef();
 
     useEffect(() => {
         const fetchChallengeDetails = async () => {
@@ -63,6 +62,24 @@ const AllowanceTable = ({ selectedChallengeId }) => {
         fetchHistoryData();
     }, [selectedParticipant, selectedChallengeId, year, month]);
 
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (contextMenuRef.current && !contextMenuRef.current.contains(event.target)) {
+                setContextMenu({ visible: false });
+            }
+        };
+
+        if (contextMenu.visible) {
+            document.addEventListener('mousedown', handleClickOutside);
+        } else {
+            document.removeEventListener('mousedown', handleClickOutside);
+        }
+
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+        };
+    }, [contextMenu.visible]);
+
     const handleUserJoin = async (selectedUserIds) => {
         try {
             await axiosInstance.post('/api/challenge/join', {
@@ -90,25 +107,27 @@ const AllowanceTable = ({ selectedChallengeId }) => {
         }
     };
 
-    const handleExpenseDelete = async ({ props }) => {
+    const handleExpenseDelete = async () => {
         const confirmation = window.confirm("정말로 삭제하시겠습니까?");
         if (!confirmation) {
             return;
         }
 
         try {
-            await axiosInstance.delete(`/api/history/${props.historyId}`);
+            await axiosInstance.delete(`/api/history/${contextMenu.historyId}`);
+            setContextMenu({ visible: false });
             fetchHistoryData();
         } catch (error) {
             console.error('Error deleting expense:', error);
         }
     };
 
-    const handleExpenseEdit = async ({ props }) => {
-        const historyItem = historyData.flatMap(entry => entry.dateHistory).find(item => item.historyId === props.historyId);
+    const handleExpenseEdit = () => {
+        const historyItem = historyData.flatMap(entry => entry.dateHistory).find(item => item.historyId === contextMenu.historyId);
         if (historyItem) {
             setSelectedHistoryItem(historyItem);
             setShowEditModal(true);
+            setContextMenu({ visible: false });
         }
     };
 
@@ -118,11 +137,16 @@ const AllowanceTable = ({ selectedChallengeId }) => {
 
     const handleContextMenu = (event, historyId) => {
         event.preventDefault();
-        setContextMenuHistoryId(historyId);
-        show({
-            event,
-            props: { historyId }
+        setContextMenu({
+            visible: true,
+            x: event.clientX,
+            y: event.clientY,
+            historyId
         });
+    };
+
+    const handleTouchStart = (event, historyId) => {
+        handleContextMenu(event, historyId);
     };
 
     const totalUsedAmount = historyData.reduce((total, entry) => total + entry.usedAmount, 0);
@@ -204,7 +228,10 @@ const AllowanceTable = ({ selectedChallengeId }) => {
                                 </tr>
                                 {entry.dateHistory.map((history, idx) => (
                                     <React.Fragment key={history.historyId}>
-                                        <tr onContextMenu={(e) => handleContextMenu(e, history.historyId)}>
+                                        <tr
+                                            onContextMenu={(e) => handleContextMenu(e, history.historyId)}
+                                            onClick={(e) => handleTouchStart(e, history.historyId)}
+                                        >
                                             <td className={styles.detailsColumn}>{history.content}</td>
                                             <td className={styles.priceColumn}>{formatCurrency(history.amount)}</td>
                                         </tr>
@@ -215,10 +242,16 @@ const AllowanceTable = ({ selectedChallengeId }) => {
                     </tbody>
                 </table>
             </div>
-            <Menu id={MENU_ID}>
-                <Item onClick={handleExpenseDelete}>삭제</Item>
-                <Item onClick={handleExpenseEdit}>수정</Item>
-            </Menu>
+            <div ref={contextMenuRef}>
+                <CustomContextMenu
+                    visible={contextMenu.visible}
+                    x={contextMenu.x}
+                    y={contextMenu.y}
+                    onEdit={handleExpenseEdit}
+                    onDelete={handleExpenseDelete}
+                    onClose={() => setContextMenu({ visible: false })}
+                />
+            </div>
             {showEditModal && <EditModal historyItem={selectedHistoryItem} setShowEditModal={setShowEditModal} fetchHistoryData={fetchHistoryData} />}
             <button onClick={() => setShowExpenseModal(true)} className={styles.addExpenseButton}>소비 추가</button>
             {showUserModal && <Modal handleUserJoin={handleUserJoin} setShowModal={setShowUserModal} />}

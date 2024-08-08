@@ -2,12 +2,14 @@ import React, { useState } from 'react';
 import styles from './ExpenseModal.module.css';
 
 const ExpenseModal = ({ handleExpenseAdd, setShowModal }) => {
-    const [date, setDate] = useState('');
+    const today = new Date().toISOString().split('T')[0];
+    const [date, setDate] = useState(today);
     const [content, setContent] = useState('');
     const [amount, setAmount] = useState('');
 
     const handleSubmit = () => {
         handleExpenseAdd({ date, content, amount: parseInt(amount, 10) });
+        setShowModal(false);
     };
 
     return (

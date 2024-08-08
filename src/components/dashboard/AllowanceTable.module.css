@@ -200,20 +200,28 @@
     background-color: #1a242f;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 769px) {
+    .challengeInfo h2 {
+        margin-left: 20px
+    }
+
     .infoRow {
         flex-direction: column;
         align-items: center;
     }
 
     .header {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
     }
 
     .personTabs {
-        flex-direction: column;
+        flex-direction: row;
         align-items: flex-start;
+    }
+
+    .tableContainer {
+        width: 100%;
     }
 
     .table th, .table td {
